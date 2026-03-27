@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.SecureRandom;
+import java.security.SecureRandom;
 
 public class RandomCharacterPasswordGenerator implements PasswordGenerator {
 

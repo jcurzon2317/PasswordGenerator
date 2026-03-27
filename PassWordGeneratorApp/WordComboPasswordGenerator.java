@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 
 public class WordComboPasswordGenerator implements PasswordGenerator {
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private List<String> words;
 
     public WordComboPasswordGenerator() {

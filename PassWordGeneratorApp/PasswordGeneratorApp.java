@@ -5,14 +5,14 @@ public class PasswordGeneratorApp {
     private final PasswordValidator validator;
     private final Scanner scanner;
 
-    public PasswordGenerator() {
+    public PasswordGeneratorApp() {
         this.generatorFactory = new GeneratorFactory();
         this.validator = new PasswordValidator();
-        this.scanner = new Scanner(system.in);
+        this.scanner = new Scanner(System.in);
     }
 
-    public voic start() {
-        System.out.println("=== Password Generator===");
+    public void start() {
+        System.out.println("=== Password Generator ===");
 
         boolean running = true;
 
@@ -25,7 +25,7 @@ public class PasswordGeneratorApp {
                     PasswordConfig config = readUserOptions();
                     String password = generatePassword(config);
 
-                    if(password !=null) {
+                    if (password != null) {
                         printPassword(password);
                     }
                     break;
@@ -36,17 +36,16 @@ public class PasswordGeneratorApp {
                     break;
 
                 default:
-                    System.out.println("Invaldi choice. Please try again.");
+                    System.out.println("Invalid choice. Please try again.");
             }
 
             System.out.println();
-
         }
 
         scanner.close();
     }
 
-    public voic showMenu() {
+    public void showMenu() {
         System.out.println("1. Generate Password");
         System.out.println("2. Exit");
     }
@@ -56,46 +55,45 @@ public class PasswordGeneratorApp {
 
         System.out.println("\nSelect password type:");
         System.out.println("1. Letters only");
-        System.out.println("2. Letters and number");
+        System.out.println("2. Letters and numbers");
         System.out.println("3. Letters, numbers, and symbols");
         System.out.println("4. Random word combo with numbers");
 
         int typeChoice = readInt("Enter password type: ");
 
-        switch (typechoice) {
+        switch (typeChoice) {
             case 1:
-                config.setUserLetters(true);
-                config.setUserNumbers(false);
+                config.setUseLetters(true);
+                config.setUseNumbers(false);
                 config.setUseSymbols(false);
                 config.setUseWordCombo(false);
                 config.setLength(readInt("Enter password length: "));
                 break;
 
             case 2:
-                config.setUserLetters(true);
-                config.setUserNumbers(true);
+                config.setUseLetters(true);
+                config.setUseNumbers(true);
                 config.setUseSymbols(false);
                 config.setUseWordCombo(false);
                 config.setLength(readInt("Enter password length: "));
                 break;
 
             case 3:
-                config.setUserLetters(true);
-                config.setUserNumbers(true);
+                config.setUseLetters(true);
+                config.setUseNumbers(true);
                 config.setUseSymbols(true);
                 config.setUseWordCombo(false);
                 config.setLength(readInt("Enter password length: "));
                 break;
 
             case 4:
-                config.setUserLetters(false);
-                config.setUserNumbers(true);
+                config.setUseLetters(false);
+                config.setUseNumbers(true);
                 config.setUseSymbols(false);
                 config.setUseWordCombo(true);
-                config.setLength(readInt("Enter password length: "));
 
-                config.setNumberOfWords(redint("Enter number of words: "));
-                config.setSeparator(readLine("Enter separatoor between words (or leave blank); "));
+                config.setNumberOfWords(readInt("Enter number of words: "));
+                config.setSeparator(readLine("Enter separator between words (or leave blank): "));
                 config.setAppendNumber(readYesNo("Append numbers at the end? (y/n): "));
                 config.setCapitalizeWords(readYesNo("Capitalize each word? (y/n): "));
                 break;
@@ -115,7 +113,8 @@ public class PasswordGeneratorApp {
 
         return config;
     }
-public String generatePassword(PasswordConfig config) {
+
+    public String generatePassword(PasswordConfig config) {
         try {
             PasswordGenerator generator = generatorFactory.getGenerator(config);
             String password = generator.generate(config);
@@ -143,11 +142,11 @@ public String generatePassword(PasswordConfig config) {
 
             if (scanner.hasNextInt()) {
                 int value = scanner.nextInt();
-                scanner.nextLine(); // consume leftover newline
+                scanner.nextLine();
                 return value;
             } else {
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine(); // discard invalid input
+                scanner.nextLine();
             }
         }
     }

@@ -30,8 +30,6 @@ public abstract class TourOptimizer {
 
         this.distanceMatrix = buildDistanceMatrix(this.places, calc, this.radius);
 
-        this.tour = nearestNeighborTour(0);
-
         improve();
 
         return buildPlacesFromTour();
@@ -80,8 +78,23 @@ public abstract class TourOptimizer {
         return result;
     }
 
-    protected void improve() {
-           }
+    protected int[] bestNearestNeighborTour() {
+        int n = places.size();
+        int[] bestTour = null;
+        long bestLength = Long.MAX_VALUE;
+
+        for (int start = 0; start < n; start++) {
+            int[] candidate = nearestNeighborTour(start);
+            long candidateLength = tourLength(candidate);
+
+            if (candidateLength < bestLength) {
+                bestLength = candidateLength;
+                bestTour = candidate;
+            }
+        }
+
+        return bestTour;
+    }
 
     protected Places buildPlacesFromTour() {
         Places ordered = new Places();
@@ -105,4 +118,6 @@ public abstract class TourOptimizer {
 
         return total;
     }
+
+    protected abstract void improve();
 }

@@ -1,0 +1,108 @@
+package com.tco.misc.tour;
+
+import com.tco.requests.Places;
+import com.tco.misc.CalculatorFactory;
+import com.tco.misc.DistanceCalculator;
+import com.tco.misc.RequestException;
+
+public abstract class TourOptimizer {
+    protected Places places;
+    protected double radius;
+    protected String formula;
+    protected double response;
+    protected long[][] distanceMatrix;
+    protected int[] tour;
+
+    public Places construct(Places places, double earthRadius, String formula, double responseTime)
+            throws RequestException {
+
+        this.places = places;
+        this.radius = earthRadius;
+        this.formula = formula;
+        this.response = responseTime;
+
+        if (places == null || places.size() <= 1) {
+            return places;
+        }
+
+        CalculatorFactory factory = new CalculatorFactory();
+        DistanceCalculator calc = factory.getCalculator(formula);
+
+        this.distanceMatrix = buildDistanceMatrix(this.places, calc, this.radius);
+
+        this.tour = nearestNeighborTour(0);
+
+        improve();
+
+        return buildPlacesFromTour();
+    }
+
+    protected long[][] buildDistanceMatrix(Places places, DistanceCalculator calc, double radius) {
+        int n = places.size();
+        long[][] matrix = new long[n][n];
+
+        for (int i = 0; i < n; i++) {
+            matrix[i][i] = 0;
+            for (int j = i + 1; j < n; j++) {
+                long distance = calc.between(places.get(i), places.get(j), radius);
+                matrix[i][j] = distance;
+                matrix[j][i] = distance;
+            }
+        }
+
+        return matrix;
+    }
+
+    protected int[] nearestNeighborTour(int start) {
+        int n = places.size();
+        int[] result = new int[n];
+        boolean[] visited = new boolean[n];
+
+        result[0] = start;
+        visited[start] = true;
+
+        for (int i = 1; i < n; i++) {
+            int last = result[i - 1];
+            int nearest = -1;
+            long bestDistance = Long.MAX_VALUE;
+
+            for (int j = 0; j < n; j++) {
+                if (!visited[j] && distanceMatrix[last][j] < bestDistance) {
+                    bestDistance = distanceMatrix[last][j];
+                    nearest = j;
+                }
+            }
+
+            result[i] = nearest;
+            visited[nearest] = true;
+        }
+
+        return result;
+    }
+
+    protected void improve() {
+           }
+
+    protected Places buildPlacesFromTour() {
+        Places ordered = new Places();
+
+        for (int index : tour) {
+            ordered.add(places.get(index));
+        }
+
+        return ordered;
+    }
+
+    protected long tourLength(int[] candidateTour) {
+        long total = 0;
+        int n = candidateTour.length;
+
+        for (int i = 0; i < n; i++) {
+            int from = candidateTour[i];
+            int to = candidateTour[(i + 1) % n];
+            total += distanceMatrix[from][to];
+        }
+
+        return total;
+    }
+}
